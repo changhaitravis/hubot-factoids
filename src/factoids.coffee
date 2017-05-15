@@ -32,16 +32,22 @@ module.exports = (robot) ->
     res.end JSON.stringify @factoids.data, null, 2
 
   prefix = process.env.HUBOT_FACTOID_PREFIX or '!'
-
-  robot.hear new RegExp("^[#{prefix}]([\\w\\s-]{2,}\\w)( @.+)?", 'i'), (msg) =>
-    fact = @factoids.get msg.match[1]
-    to = msg.match[2]
-    if not fact? or fact.forgotten
+  
+  getFactoid = (msg, key, to) => 
+    fact = @factoids.get key
+    if not fact?
       msg.reply "Not a factoid"
+    else if fact.forgotten
+        msg. reply "Oops, I forgot"
     else
       fact.popularity++
       to ?= msg.message.user.name
       msg.send "#{to.trim()}: #{fact.value}"
+
+  robot.hear new RegExp("^[#{prefix}]([\\w\\s-]{2,}\\w)( @.+)?", 'i'), (msg) =>
+    key = msg.match[1]
+    to = msg.match[2]
+    getFactoid msg, key, to
 
   robot.respond /learn (.{3,}) = ([^@].+)/i, (msg) =>
     [key, value] = [msg.match[1], msg.match[2]]

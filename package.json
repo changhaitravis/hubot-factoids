@@ -21,7 +21,8 @@
     "url": "https://github.com/hubot-scripts/hubot-factoids/issues"
   },
   "dependencies": {
-    "coffee-script": "~1.6"
+    "coffee-script": "~1.6",
+    "natural": "^0.5.1"
   },
   "devDependencies": {
     "chai": "*",
